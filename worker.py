@@ -1,7 +1,14 @@
 from fastapi import FastAPI, UploadFile, File
+import imageio_ffmpeg
 import subprocess, shutil, uuid, os
 
 app = FastAPI()
+
+FFMPEG_BIN = imageio_ffmpeg.get_ffmpeg_exe()
+os.makedirs("/tmp/bin", exist_ok=True)
+if not os.path.exists("/tmp/bin/ffmpeg"):
+    os.symlink(FFMPEG_BIN, "/tmp/bin/ffmpeg")
+os.environ["PATH"] = f"/tmp/bin:{os.environ.get('PATH', '')}"
 
 @app.get("/")
 @app.get("/status")
